@@ -1,2 +1,1 @@
-from .base import TimeStamp
-from .user import UserProfile
+from .user_profile import UserProfile
