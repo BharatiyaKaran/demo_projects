@@ -108,13 +108,23 @@ class UserProfileDetail(APIView):
             return UserProfile.objects.get(pk = pk)
         except User.DoesNotExist:
             raise status.HTTP_404_NOT_FOUND
+        
     
     def get(self, request, pk, format=None):
-        user = self.get_object(pk)
+        try:
+            user = self.get_object(pk)
+        except Exception:
+            return Response("Object does not exist", status=status.HTTP_404_NOT_FOUND)
+
         serializer = UserProfileViewSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, pk):
+        try:
+            user = self.get_object(pk)
+        except Exception:
+            return Response("Object does not exist", status=status.HTTP_404_NOT_FOUND)
+
         serializer = UserProfileCreateSerializer(instance=request.user, data=request.data)
         print(request.user)
         response_data = {
@@ -132,6 +142,14 @@ class UserProfileDetail(APIView):
         
         return Response(response_data, status=response_status)
 
+    def delete(self, request, pk):
+        try:
+            user = self.get_object(pk)
+        except Exception:
+            return Response("Object does not exist", status=status.HTTP_404_NOT_FOUND)
+
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     def patch(self, request, pk, format=None):
         # TODO : Complete this !
