@@ -13,4 +13,4 @@ class BlogViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Blog
-        fields = ['title', 'owner', 'body', 'slug']
+        fields = ['id', 'title', 'owner', 'body', 'slug']
