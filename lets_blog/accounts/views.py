@@ -11,12 +11,13 @@ from accounts.serializers import (
     UserProfileCreateSerializer)
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from datetime import timedelta
 
 # Create your views here.
 
 class UserList(APIView):
     """
-    List all users or create a new user
+    List all users
     """
     #permission_classes = [permissions.IsAdminUser]
 
@@ -25,25 +26,33 @@ class UserList(APIView):
         serializer = UserViewSerializer(users, many=True)
         return Response(serializer.data)
 
+class SignUp(APIView):
+    """
+    Sign Up - Create new
+    """
+
     def post(self, request, format=None):
         serializer = UserCreateSerializer(data=request.data)
         response_data = {
             "errors": None,
             "data": None
         }
-        
 
         if serializer.is_valid():
             serializer.save()
             # JWT 
             refresh = RefreshToken.for_user(request.user)
+            access_token = refresh.access_token
+            # set access token expiry as 1 day
+            access_token.set_exp(lifetime=timedelta(days=1))
             response_data["data"] = {
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'access': str(access_token),
             }
             response_status=status.HTTP_201_CREATED
         else:
             response_data["errors"] = serializer.errors
+            print(serializer.errors)
             response_status = status.HTTP_400_BAD_REQUEST
         
         return Response(response_data, status=response_status)
