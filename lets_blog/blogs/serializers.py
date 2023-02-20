@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models.blog import Blog
-from accounts.serializers import UserViewSerializer
+from accounts.serializers import UserSerializer
 
 class BlogCreateSerializer(serializers.ModelSerializer):
 
@@ -9,7 +9,7 @@ class BlogCreateSerializer(serializers.ModelSerializer):
         fields = ['title', 'owner', 'body', 'status']
 
 class BlogViewSerializer(serializers.ModelSerializer):
-    owner = UserViewSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Blog
