@@ -2,15 +2,17 @@ from rest_framework import serializers
 from .models.blog import Blog
 from accounts.serializers import UserSerializer
 
-class BlogCreateSerializer(serializers.ModelSerializer):
+class BlogSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = Blog
-        fields = ['title', 'owner', 'body', 'status']
+        fields = ['id', 'title', 'owner', 'body', 'status']
+        extra_kwargs = {'id': {'read_only': True} }
 
-class BlogViewSerializer(serializers.ModelSerializer):
+class BlogDetailSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
 
-    class Meta:
+    class Meta: 
         model = Blog
-        fields = ['id', 'title', 'owner', 'body', 'slug']
+        fields = ['id', 'title', 'owner', 'body', 'status']
+        extra_kwargs = {'id': {'read_only': True} }
